@@ -1,4 +1,3 @@
-import math
 import itertools
 def permToString(perm):
     return str(perm)

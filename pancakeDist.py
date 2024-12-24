@@ -15,6 +15,3 @@ def loadDistFile(n):
 def getDistPerm(perm):
     permString  = permToString(perm)
     return distances[permString]
-# loadDistFile(4)
-
-# print(getDistPerm([4, 1, 3, 2]))

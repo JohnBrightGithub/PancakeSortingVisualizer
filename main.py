@@ -1,6 +1,5 @@
 from dash import Dash, html
 import dash_cytoscape as cyto
-import itertools
 from common import permToString
 from common import colexicographicPermutations
 from common import permutations
@@ -12,20 +11,32 @@ from path import flip
 from path import genEdges
 from path import getEdgeDict
 from path import getAddedDict
+import argparse
+from dash.dependencies import Input, Output
+import math
+from colour import Color
+
+
 
 graphEdges = []
 
+n = 5
 
-def traverse(allPerms):
-    #traverse all nodes, return dictionary of node positions and edges
-    print("temp")
+class CommandLineEstimate:
+    def __init__(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument("-n", "--n", help = " length of pancake stacks ", required = False, default = 5)
+        
+        argument = parser.parse_args()
+        
+        if argument.n:
+            global n
+            n = int(argument.n)
 def hexagonPos(initPerm, initX, initY):
     #writes in positions for nodes in a hexagon, starts with initPerm
-    #print("initX ", initX, " initY ", initY)
     spacer = 10
     node1 = initPerm
     node1String = str(node1)
-    #print("node1String ", node1String)
     permX[node1String], permY[node1String] = initX, initY
     node2 = flip(initPerm, 1)
     node2String = str(node2)
@@ -53,10 +64,6 @@ app = Dash(__name__)
 def getInitPos(hexNumber):
     k = len(hexNumber)
 
-
-
-import math
-
 spacerP4 = 40
 def genInitPos(initX, initY, r):
     global totalIndex
@@ -76,33 +83,12 @@ def genInitPos(initX, initY, r):
                 totalIndex+=1
             newInitY += spacerP4
         return 
-    odd = (r % 2)==1
     for k in range(r, 0, -1):
         newInitX = radii[r-5]*math.cos(2*math.pi*k/r) + initX
         newInitY = radii[r-5] * math.sin(2*math.pi*k/r) + initY
         genInitPos(newInitX, newInitY, r-1)
     return
-radii = [75, 250, 850, 2600]
 
-n = 5
-allPerms = permutations(n)
-numPerms = len(allPerms)
-genEdges(n)
-permStrings = []
-for i in range(numPerms):
-    allPerms[i] = list(allPerms[i])
-    perm = allPerms[i]
-    permStrings.append(permToString(perm))
-permX = {}
-permY = {}
-nodeTuples = []
-
-sorted_perm_list = colexicographicPermutations(n)
-totalIndex = 0
-genInitPos(0,0,n)
-
-nodeColors = {}
-permDists = {}
 def getColors():
     max = 0
     for i in range(numPerms):
@@ -124,24 +110,6 @@ def getColors():
         dist = permDists[permString]
         nodeColors[permString] = colors[dist]
 
-    
-#Assign colors to nodes
-from colour import Color
-colors = []
-loadDistFile(n)
-getColors()
-
-for i in range(numPerms):
-    nodeTuples.append((permStrings[i], permStrings[i], permY[permStrings[i]], permX[permStrings[i]], nodeColors[permStrings[i]]))
-nodes = [
-    {
-        'data': {'id': short, 'label': label},
-        'position': {'x': 20 * lat, 'y': -20 * long},
-        'style': {'background-color': color, "height": 150, "width": 150},
-
-    }
-    for short, label, long, lat, color in (nodeTuples)
-]
 def getEdgesFromDict(color, dict):
     color = color.get_hex()
     edgeStrings = []
@@ -173,14 +141,51 @@ def drawGraph():
         html.P(id='cytoscape-tapNodeData-output')
     ])
 
-drawGraph()
+if __name__ == "__main__":
+    cmdLine = CommandLineEstimate()
+    radii = [75, 250, 850, 2600]
+
+    allPerms = permutations(n)
+    numPerms = len(allPerms)
+    genEdges(n)
+    permStrings = []
+    for i in range(numPerms):
+        allPerms[i] = list(allPerms[i])
+        perm = allPerms[i]
+        permStrings.append(permToString(perm))
+    permX = {}
+    permY = {}
+    nodeTuples = []
+
+    sorted_perm_list = colexicographicPermutations(n)
+    totalIndex = 0
+    genInitPos(0,0,n)
+
+    nodeColors = {}
+    permDists = {}
+    #Assign colors to nodes
+    colors = []
+    loadDistFile(n)
+    getColors()
+
+    for i in range(numPerms):
+        nodeTuples.append((permStrings[i], permStrings[i], permY[permStrings[i]], permX[permStrings[i]], nodeColors[permStrings[i]]))
+    nodes = [
+        {
+            'data': {'id': short, 'label': label},
+            'position': {'x': 20 * lat, 'y': -20 * long},
+            'style': {'background-color': color, "height": 150, "width": 150},
+
+        }
+        for short, label, long, lat, color in (nodeTuples)
+    ]
+    drawGraph()
 
 
 
 
 
 
-from dash.dependencies import Input, Output
 @app.callback(Output('cytoscape-layout-1', 'elements'),
               Input('cytoscape-layout-1', 'tapNodeData'))
 def displayTapNodeData(data):

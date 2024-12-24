@@ -25,7 +25,7 @@ def genEdges(n):
         allEdges = findAllEdges(perm, 3)
         for edge in allEdges:
             drawEdge(edge, edgeDict)
-            print("edge: ", edge)
+            #print("edge: ", edge)
 def drawNewEdges(perm, origDist, pathList):
     n=len(perm)
     if(origDist==0):
