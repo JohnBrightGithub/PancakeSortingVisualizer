@@ -38,11 +38,30 @@ def flip(perm, flip):
     newPerm[0:flip+1] = newPerm[0:flip+1][::-1]
     return newPerm
 
-def findAllNeighbors(perm, n):
+def isEfficient(state, move, n):
+     if move==n:
+          if state[0]==n:
+               return True
+     elif(abs(state[0]-state[move])==1):
+          if(abs(state[move-1]-state[move])!=1):
+            return True
+     return False
+
+def isdefficient(state, move, n):
+     if move==n:
+          if state[-1]==n:
+               return True
+     elif(abs(state[0]-state[move])!=1):
+          if(abs(state[move-1]-state[move])==1):
+            return True
+     return False
+
+def findAllEffNeighbors(perm, n):
     edges = []
     for i in range(1, n):
-        node2 = flip(perm, i)
-        edges.append(node2)
+        if(isdefficient(perm, i, n)):
+            node2 = flip(perm, i)
+            edges.append(node2)
     return edges
 
 def findAllEdges(perm, upTo):

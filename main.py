@@ -129,6 +129,7 @@ def getEdgesFromDict(color, dict):
 def drawGraph():
     edges = getEdgesFromDict(Color('grey'), edgeDict)
     elements = nodes + edges
+    print("elements ", elements)
     app.layout = html.Div([
         cyto.Cytoscape(
             id='cytoscape-layout-1',
