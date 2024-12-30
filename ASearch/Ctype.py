@@ -14,7 +14,7 @@ def getDist(perm):
     n = len(perm)
     return getDistRange(perm, 0, n+5)
 def getDistRange(perm, min, max):
-    print("perm ", perm)
+    #print("perm ", perm)
     n=len(perm)
     
     aSearch_lib = cdll.LoadLibrary('ASearch/ASearchLibrary.dll')

@@ -9,13 +9,12 @@ from pancakeDist import loadDistFile
 from path import drawPath
 from path import flip
 from path import genEdges
-from path import getEdgeDict
 from path import getAddedDict
 import argparse
 from dash.dependencies import Input, Output
 import math
 from colour import Color
-
+from draw import runAppAndDraw
 
 
 graphEdges = []
@@ -59,7 +58,6 @@ edgeDict = {}
 addedEdgeDict = {}
 
 
-app = Dash(__name__)
 
 def getInitPos(hexNumber):
     k = len(hexNumber)
@@ -110,37 +108,7 @@ def getColors():
         dist = permDists[permString]
         nodeColors[permString] = colors[dist]
 
-def getEdgesFromDict(color, dict):
-    color = color.get_hex()
-    edgeStrings = []
-    for edgeString in dict:
-        splitAt = edgeString.find("],") + 1
-        firstNode = edgeString[1:splitAt]
-        secondNode = edgeString[splitAt+2:-1]
-        edgeStrings.append((firstNode, secondNode))
-    edges = [
-        {'data': {'source': source, 'target': target},
-         'style': {'lineColor': color}}
-        for source, target in (
-            edgeStrings
-        )
-    ]
-    return edges
-def drawGraph():
-    edges = getEdgesFromDict(Color('grey'), edgeDict)
-    elements = nodes + edges
-    print("elements ", elements)
-    app.layout = html.Div([
-        cyto.Cytoscape(
-            id='cytoscape-layout-1',
-            elements=elements,
-            style={'width': '100%', 'height': '750px'},
-            layout={
-                'name': 'preset'
-            }
-        ),
-        html.P(id='cytoscape-tapNodeData-output')
-    ])
+
 
 if __name__ == "__main__":
     cmdLine = CommandLineEstimate()
@@ -180,29 +148,5 @@ if __name__ == "__main__":
         }
         for short, label, long, lat, color in (nodeTuples)
     ]
-    drawGraph()
-
-
-
-
-
-
-@app.callback(Output('cytoscape-layout-1', 'elements'),
-              Input('cytoscape-layout-1', 'tapNodeData'))
-def displayTapNodeData(data):
-    if data:
-        
-        perm = nodeIDToList(data['label'])
-        drawPath(perm)
-        addedEdgeDict = getAddedDict()
-        edges = getEdgesFromDict(Color("red"), addedEdgeDict)
-        elements = nodes + edges
-        return elements
-    else:
-        edgeDict = getEdgeDict()
-        return nodes+ getEdgesFromDict(Color("grey"), edgeDict)
-        
-
-if __name__ == '__main__':
-    app.run(debug=True, port=1718)
+    runAppAndDraw(nodes)
 

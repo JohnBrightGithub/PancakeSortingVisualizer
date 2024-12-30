@@ -1,5 +1,5 @@
 from pancakeDist import getDistPerm
-from draw import drawEdge
+from common import drawEdge
 from common import nodeIDToList
 from common import permutations
 from common import flip
@@ -26,6 +26,8 @@ def genEdges(n):
         for edge in allEdges:
             drawEdge(edge, edgeDict)
             #print("edge: ", edge)
+def drawEdgePath(edge):
+    drawEdge(edge, edgeDict)
 def drawNewEdges(perm, origDist, pathList):
     n=len(perm)
     if(origDist==0):

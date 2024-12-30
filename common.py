@@ -47,7 +47,7 @@ def isEfficient(state, move, n):
             return True
      return False
 
-def isdefficient(state, move, n):
+def isDefficient(state, move, n):
      if move==n:
           if state[-1]==n:
                return True
@@ -58,9 +58,11 @@ def isdefficient(state, move, n):
 
 def findAllEffNeighbors(perm, n):
     edges = []
-    for i in range(1, n):
-        if(isdefficient(perm, i, n)):
-            node2 = flip(perm, i)
+    for i in range(1, n+1):
+        #print("move ", i, " isDefficient ", isDefficient(perm, i, n))
+        if(isDefficient(perm, i, n)):
+            node2 = flip(perm, i-1)
+            #print("move ", i, " isDefficient ", isDefficient(perm, i, n), "after Flip ", node2)
             edges.append(node2)
     return edges
 
@@ -74,3 +76,20 @@ def findAllEdges(perm, upTo):
         node2 = flip(perm, i)
         edges.append((perm, node2))
     return edges
+
+
+def drawEdge(edge, dict):
+    #print("drawEdge ", edge)
+    edgeString = str(edge)
+    reverseEdge = (edge[1],edge[0])
+    reverseEdgeString = str(reverseEdge)
+    if not edgeString in dict and not reverseEdgeString in dict:
+        dict[edgeString] = 1
+    
+
+def generate_positions(n):
+    if(n%2==1):
+        positions = [(-1)**(i+1) * ((i+1)//2) for i in range(n)]
+    else:
+        positions = [(-1)**i * ((i + 2) // 2) for i in range(n)]
+    return positions

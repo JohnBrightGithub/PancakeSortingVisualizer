@@ -14,7 +14,7 @@ for k in range(2):
         for i in range(2):
             newInitX = initX
             for j in range(2):
-                print(sorted_perm_list[totalIndex], " x ", newInitX, " y ", newInitY)
+                #print(sorted_perm_list[totalIndex], " x ", newInitX, " y ", newInitY)
                 newInitX += 1
                 totalIndex+=1
             newInitY += 1
@@ -25,7 +25,7 @@ if(odd):
     for i in range(2):
         newInitXOdd = initX-2.5
         for j in range(2):
-            print(sorted_perm_list[totalIndex], " x ", newInitXOdd, " y ", newInitYOdd)
+            #print(sorted_perm_list[totalIndex], " x ", newInitXOdd, " y ", newInitYOdd)
             newInitXOdd += 1
             totalIndex+=1
         newInitYOdd += 1
@@ -37,7 +37,7 @@ def genInitPos(initX, initY, r):
         for i in range(2):
             newInitX = initX
             for j in range(2):
-                print(sorted_perm_list[totalIndex], " x ", newInitX, " y ", newInitY)
+                #print(sorted_perm_list[totalIndex], " x ", newInitX, " y ", newInitY)
                 newInitX += 1
                 totalIndex+=1
             newInitY += 1
